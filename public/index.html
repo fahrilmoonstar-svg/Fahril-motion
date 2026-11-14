@@ -130,7 +130,7 @@
       <div class="tab-pane" id="file-pane">
         <label for="xml-file">Upload file XML preset</label>
         <input type="file" id="xml-file" accept=".xml">
-        <p class="info-small">Maksimal <strong>4 MB</strong> (batas Netlify Functions). File diparse di server.</p>
+        <p class="info-small">Maksimal <strong>4 MB</strong> (batas Vercel Functions). File diparse di server.</p>
         <button id="renderFileBtn">🚀 Render Preset</button>
       </div>
     </div>
@@ -145,7 +145,7 @@
       <div class="fitur-item"><span>✅</span> Tampilan liquid glass cyberpunk 2026</div>
       <div class="fitur-item"><span>✅</span> Efek blur smooth dan responsif</div>
       <div class="fitur-item"><span>✅</span> Baca metadata link share Alight Motion</div>
-      <div class="fitur-item"><span>✅</span> Upload & parsing XML di Netlify Functions</div>
+      <div class="fitur-item"><span>✅</span> Upload & parsing XML di Vercel Functions</div>
       <div class="fitur-item"><span>✅</span> API JSON siap dipakai aplikasi lain</div>
     </div>
 
@@ -198,7 +198,6 @@
       else { btn.textContent = btn.dataset.label || '🚀 Render Preset'; }
     }
 
-    // ---------- Render Link ----------
     renderLinkBtn.addEventListener('click', async () => {
       const link = document.getElementById('am-link').value.trim();
       if (!link) return alert('⚠️ Masukkan link share Alight Motion!');
@@ -234,12 +233,11 @@
       }
     });
 
-    // ---------- Render File ----------
     renderFileBtn.addEventListener('click', async () => {
       const fileInput = document.getElementById('xml-file');
       const file = fileInput.files[0];
       if (!file) return alert('⚠️ Pilih file XML terlebih dahulu!');
-      if (file.size > 4 * 1024 * 1024) return alert('⚠️ File terlalu besar! Maksimal 4 MB (batas Netlify).');
+      if (file.size > 4 * 1024 * 1024) return alert('⚠️ File terlalu besar! Maksimal 4 MB (batas Vercel).');
 
       hasilBox.classList.remove('tampil');
       setLoading(renderFileBtn, true);
