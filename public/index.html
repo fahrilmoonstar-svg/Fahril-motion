@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rillzy Dex</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', system-ui, sans-serif; }
+    :root {
+      --glass: rgba(18, 20, 35, 0.65);
+      --glass-border: rgba(180, 160, 255, 0.18);
+      --teks: #E9E9F7;
+      --aksen: #A855F7;
+      --aksen2: #22D3EE;
+      --bayangan: 0 8px 32px rgba(168, 85, 247, 0.18);
+    }
+    body {
+      background: linear-gradient(135deg, #050510, #080A20, #050510);
+      color: var(--teks);
+      min-height: 100vh;
+      padding: 2rem 1.2rem;
+      line-height: 1.6;
+    }
+    .container { max-width: 620px; margin: 0 auto; }
+    header { text-align: center; margin-bottom: 3rem; }
+    .logo {
+      font-size: 2.4rem; font-weight: 800;
+      background: linear-gradient(90deg, var(--aksen), var(--aksen2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+    }
+    .sub-logo { color: rgba(210, 200, 255, 0.65); font-size: 0.9rem; }
+    .hero-desc { text-align: center; color: rgba(210, 200, 255, 0.65); margin-bottom: 2.5rem; }
+    .tab-selector { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+    .tab-btn {
+      flex: 1; padding: 0.8rem; background: var(--glass);
+      border: 1px solid var(--glass-border); border-radius: 12px;
+      color: rgba(210, 200, 255, 0.65); font-size: 0.9rem;
+      cursor: pointer; transition: all 0.25s ease;
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    }
+    .tab-btn.aktif {
+      border-color: var(--aksen); color: var(--aksen2);
+      box-shadow: 0 0 14px rgba(168, 85, 247, 0.22);
+    }
+    .tab-btn:hover { border-color: rgba(168, 85, 247, 0.35); }
+    .tab-content {
+      background: var(--glass); border: 1px solid var(--glass-border);
+      border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem;
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      box-shadow: var(--bayangan);
+    }
+    .tab-pane { display: none; }
+    .tab-pane.aktif { display: block; }
+    label { display: block; font-size: 0.9rem; color: rgba(210, 200, 255, 0.65); margin-bottom: 0.6rem; }
+    input[type="url"], input[type="file"] {
+      width: 100%; padding: 0.9rem;
+      background: rgba(35, 38, 60, 0.55);
+      border: 1px solid rgba(180, 160, 255, 0.15);
+      border-radius: 10px; color: var(--teks); font-size: 0.9rem;
+      margin-bottom: 1rem;
+      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    }
+    input::placeholder { color: rgba(150, 140, 210, 0.45); }
+    .info-small { font-size: 0.8rem; color: rgba(150, 140, 210, 0.45); margin-bottom: 1.5rem; }
+    button {
+      width: 100%; padding: 0.95rem;
+      background: linear-gradient(90deg, var(--aksen), var(--aksen2));
+      border: none; border-radius: 10px; color: white;
+      font-size: 1rem; font-weight: 600; cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.25s ease;
+    }
+    button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 26px rgba(168, 85, 247, 0.32); }
+    button:disabled { opacity: 0.6; cursor: wait; }
+    .hasil-box {
+      background: var(--glass); border: 1px solid var(--glass-border);
+      border-radius: 16px; padding: 1.5rem; margin-bottom: 2rem;
+      display: none;
+      backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+      box-shadow: var(--bayangan);
+    }
+    .hasil-box.tampil { display: block; animation: muncul 0.4s ease-out; }
+    @keyframes muncul { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: translateY(0);} }
+    .hasil-title { font-size: 1rem; color: var(--aksen2); margin-bottom: 0.8rem; }
+    .hasil-text {
+      font-size: 0.85rem; color: rgba(210, 200, 255, 0.85);
+      word-break: break-word; white-space: pre-wrap;
+      font-family: 'Consolas', 'Courier New', monospace;
+    }
+    .hasil-text img { max-width: 100%; border-radius: 10px; margin-top: 0.8rem; display: block; }
+    .fitur-list { margin-bottom: 3rem; }
+    .fitur-list h3 { font-size: 1rem; margin-bottom: 1rem; color: var(--teks); }
+    .fitur-item {
+      display: flex; gap: 0.75rem; padding: 0.6rem 0;
+      color: rgba(210, 200, 255, 0.65); font-size: 0.9rem;
+    }
+    .fitur-item span { color: var(--aksen2); }
+    footer {
+      text-align: center; padding-top: 2rem;
+      border-top: 1px solid var(--glass-border);
+      color: rgba(150, 140, 210, 0.45); font-size: 0.8rem;
+    }
+    .err { color: #f87171; }
+    .ok { color: #34d399; }
+    @media (max-width: 480px) { .logo { font-size: 2rem; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo">Rillzy Dex</div>
+      <p class="sub-logo">Cyberpunk 2026 · Liquid Glass Engine</p>
+    </header>
+
+    <p class="hero-desc">Tampilan masa depan liquid glass cyberpunk, smooth, cepat, dan tanpa iklan.</p>
+
+    <div class="tab-selector">
+      <button class="tab-btn aktif" data-tab="link">Link Share AM</button>
+      <button class="tab-btn" data-tab="file">Upload XML</button>
+    </div>
+
+    <div class="tab-content">
+      <div class="tab-pane aktif" id="link-pane">
+        <label for="am-link">Tempel link share Alight Motion</label>
+        <input type="url" id="am-link" placeholder="Contoh: https://alightcreative.com/am/share/...">
+        <p class="info-small">Backend mengambil metadata publik (judul, thumbnail, ID preset).</p>
+        <button id="renderLinkBtn">🚀 Render Preset</button>
+      </div>
+
+      <div class="tab-pane" id="file-pane">
+        <label for="xml-file">Upload file XML preset</label>
+        <input type="file" id="xml-file" accept=".xml">
+        <p class="info-small">Maksimal <strong>4 MB</strong> (batas Netlify Functions). File diparse di server.</p>
+        <button id="renderFileBtn">🚀 Render Preset</button>
+      </div>
+    </div>
+
+    <div class="hasil-box" id="hasilBox">
+      <div class="hasil-title" id="hasilTitle">✅ Preset berhasil diproses</div>
+      <div class="hasil-text" id="hasilText"></div>
+    </div>
+
+    <div class="fitur-list">
+      <h3>Fitur Rillzy Dex</h3>
+      <div class="fitur-item"><span>✅</span> Tampilan liquid glass cyberpunk 2026</div>
+      <div class="fitur-item"><span>✅</span> Efek blur smooth dan responsif</div>
+      <div class="fitur-item"><span>✅</span> Baca metadata link share Alight Motion</div>
+      <div class="fitur-item"><span>✅</span> Upload & parsing XML di Netlify Functions</div>
+      <div class="fitur-item"><span>✅</span> API JSON siap dipakai aplikasi lain</div>
+    </div>
+
+    <footer>
+      <p>Rillzy Dex · Email: moonstarstore001@gmail.com</p>
+    </footer>
+  </div>
+
+  <script>
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+    tabBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabBtns.forEach(b => b.classList.remove('aktif'));
+        tabPanes.forEach(p => p.classList.remove('aktif'));
+        btn.classList.add('aktif');
+        document.getElementById(btn.dataset.tab + '-pane').classList.add('aktif');
+      });
+    });
+
+    const hasilBox = document.getElementById('hasilBox');
+    const hasilTitle = document.getElementById('hasilTitle');
+    const hasilText = document.getElementById('hasilText');
+    const renderLinkBtn = document.getElementById('renderLinkBtn');
+    const renderFileBtn = document.getElementById('renderFileBtn');
+
+    function showError(msg) {
+      hasilTitle.textContent = '❌ Gagal memproses';
+      hasilTitle.className = 'hasil-title err';
+      hasilText.textContent = msg;
+      hasilBox.classList.add('tampil');
+    }
+    function showOk(title, content, thumb = null) {
+      hasilTitle.textContent = title;
+      hasilTitle.className = 'hasil-title ok';
+      hasilText.textContent = content;
+      if (thumb) {
+        const img = document.createElement('img');
+        img.src = thumb;
+        img.alt = 'Thumbnail preset';
+        img.onerror = () => img.remove();
+        hasilText.appendChild(document.createElement('br'));
+        hasilText.appendChild(img);
+      }
+      hasilBox.classList.add('tampil');
+    }
+    function setLoading(btn, on) {
+      btn.disabled = on;
+      if (on) { btn.dataset.label = btn.textContent; btn.textContent = '⏳ Memproses...'; }
+      else { btn.textContent = btn.dataset.label || '🚀 Render Preset'; }
+    }
+
+    // ---------- Render Link ----------
+    renderLinkBtn.addEventListener('click', async () => {
+      const link = document.getElementById('am-link').value.trim();
+      if (!link) return alert('⚠️ Masukkan link share Alight Motion!');
+
+      hasilBox.classList.remove('tampil');
+      setLoading(renderLinkBtn, true);
+
+      try {
+        const res = await fetch('/api/render-link', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ link })
+        });
+        const json = await res.json();
+        if (!json.ok) throw new Error(json.error || 'Gagal memproses link');
+
+        const d = json.data;
+        const lines = [
+          `✅ Link valid & dibaca server`,
+          `ID Preset : ${d.presetId || '-'}`,
+          `Judul     : ${d.title || '-'}`,
+          d.description ? `Deskripsi : ${d.description}` : null,
+          d.hasDirectXml ? `Direct XML: ${d.xmlUrl}` : null,
+          '',
+          d.note
+        ].filter(Boolean);
+
+        showOk('✅ Metadata preset berhasil diambil', lines.join('\n'), d.thumbnail);
+      } catch (err) {
+        showError(err.message);
+      } finally {
+        setLoading(renderLinkBtn, false);
+      }
+    });
+
+    // ---------- Render File ----------
+    renderFileBtn.addEventListener('click', async () => {
+      const fileInput = document.getElementById('xml-file');
+      const file = fileInput.files[0];
+      if (!file) return alert('⚠️ Pilih file XML terlebih dahulu!');
+      if (file.size > 4 * 1024 * 1024) return alert('⚠️ File terlalu besar! Maksimal 4 MB (batas Netlify).');
+
+      hasilBox.classList.remove('tampil');
+      setLoading(renderFileBtn, true);
+
+      try {
+        const fd = new FormData();
+        fd.append('file', file);
+
+        const res = await fetch('/api/render-file', { method: 'POST', body: fd });
+        const json = await res.json();
+        if (!json.ok) throw new Error(json.error || 'Gagal memproses file');
+
+        const d = json.data;
+        const lines = [
+          `✅ File XML berhasil diparse server`,
+          `Nama File : ${d.originalName}`,
+          `Ukuran    : ${d.sizeKb} KB`,
+          `Root Tag  : <${d.root}>`,
+          `App Ver   : ${d.appVersion}`,
+          `Version   : ${d.version}`,
+          '',
+          '📊 Statistik:',
+          `• Scenes   : ${d.counts.scenes}`,
+          `• Layers   : ${d.counts.layers}`,
+          `• Effects  : ${d.counts.effects}`,
+          `• Elements : ${d.counts.elements}`,
+          '',
+          d.note
+        ].filter(Boolean);
+        showOk('✅ Preset XML berhasil diproses', lines.join('\n'));
+      } catch (err) {
+        showError(err.message);
+      } finally {
+        setLoading(renderFileBtn, false);
+      }
+    });
+  </script>
+</body>
+</html>
